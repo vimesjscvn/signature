@@ -49,24 +49,24 @@ update-version:
 
 .PHONY: deploy-db
 deploy-db:
-	docker-compose --env-file .env --compatibility --profile=prod -f docker-db.yml up -d --no-deps --build
+	docker compose --env-file .env --compatibility --profile=prod -f docker-db.yml up -d --no-deps --build
 
 .PHONY: deploy-tool
 deploy-tool:
-	docker-compose --env-file .env --compatibility --profile=prod -f docker-tool.yml up -d --no-deps --build
+	docker compose --env-file .env --compatibility --profile=prod -f docker-tool.yml up -d --no-deps --build
 
-.PHONY: deploy-local
+.PHONY: deploy-all
 deploy-local:
-	docker-compose --env-file .env --compatibility --profile=prod -f docker-db.yml -f docker-sign-api.yml -f docker-worker.yml up -d --no-deps --build 
-
-.PHONY: deploy-prod
-deploy-prod:
-	docker-compose --env-file .env --compatibility --profile=prod -f docker-compose.yml up -d --no-deps --build 
+	docker compose --env-file .env --compatibility --profile=prod -f docker-db.yml -f docker-sign-api.yml -f docker-worker.yml up -d --no-deps --build 
 
 .PHONY: deploy-api
 deploy-api:
-	docker-compose --env-file .env --compatibility --profile=prod -f docker-sign-api.yml up -d --no-deps --build 
+	docker compose --env-file .env --compatibility --profile=prod -f docker-sign-api.yml up -d --no-deps --build 
 
 .PHONY: deploy-worker
 deploy-worker:
-	docker-compose --env-file .env --compatibility --profile=prod -f docker-worker.yml up -d --no-deps --build
+	docker compose --env-file .env --compatibility --profile=prod -f docker-worker.yml up -d --no-deps --build
+
+.PHONY: deploy-sms-api
+deploy-api:
+	docker compose --env-file .env --compatibility --profile=prod -f docker-sms-api.yml up -d --no-deps --build 

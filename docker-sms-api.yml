@@ -1,0 +1,28 @@
+﻿version: '3.7'
+
+networks:
+  local:
+    driver: bridge
+
+services:
+  sms.api:
+    image: thientam1992/sms-api:latest
+    container_name: sms-api-${PROFILE_ENV}
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - Sms__CPCode=${SMS_CPCODE}
+      - Sms__Password=${SMS_PASSWORD}
+      - Sms__UserName=${SMS_USERNAME}
+      - Sms__ServiceId=${SMS_SERVICE_ID}
+      - Sms__CommandCode=${SMS_COMMAND_CODE}
+      - Sms__ContentType=${SMS_CONTENT_TYPE}
+    restart: always
+    ports:
+      - "${DEFAULT_PORT}83:80"
+    profiles: [ "dev", "prod" ]
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./SMS.API/wwwroot:/app/wwwroot
+      - ./SMS.API/log:/app/log
+    networks:
+      - local
