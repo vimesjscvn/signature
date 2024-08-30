@@ -51,7 +51,7 @@ services:
       - local
     
   key.api:
-    image: thientam1992/key-api	:latest
+    image: thientam1992/key-api:latest
     container_name: key-api-${PROFILE_ENV}
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
