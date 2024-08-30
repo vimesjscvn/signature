@@ -1,0 +1,44 @@
+﻿version: '3.7'
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  local:
+    driver: bridge
+
+services:
+  pgdatabase:
+    image: postgres:14.1-alpine
+    container_name: sign-db-${PROFILE_ENV}
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - '${DEFAULT_PORT}35:5432'
+    profiles: [ "dev", "prod" ]
+    volumes:
+      - /etc/timezone:/etc/timezone
+      - /etc/localtime:/etc/localtime
+      - ./docker-entrypoint-initdb.d/sign.pro.sql:/docker-entrypoint-initdb.d/sign.pro.sql
+      - ./docker-entrypoint-initdb.d/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+      - ./postgres_data:/var/lib/postgresql/data:rw
+      - ./docker-entrypoint-initdb.d/wait-for-it.sh:/docker-entrypoint-initdb.d/wait-for-it.sh
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    entrypoint:
+      [
+        "sh",
+        "-c",
+        "chmod +x /docker-entrypoint-initdb.d/wait-for-it.sh && chmod +x /docker-entrypoint-initdb.d/init-user-db.sh && docker-entrypoint.sh postgres && /docker-entrypoint-initdb.d/wait-for-it.sh localhost:5432 -- /docker-entrypoint-initdb.d/init-user-db.sh"
+      ]
+    networks:
+      - local

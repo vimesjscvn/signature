@@ -1,0 +1,74 @@
+﻿version: '3.7'
+
+networks:
+  local:
+    driver: bridge
+
+services:
+  signature.api:
+    image: thientam1992/signature-api:latest
+    container_name: signature-api-${PROFILE_ENV}
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - TerminalSetting__BaseUrl=${TERMINAL_BASE_URL}
+      - TerminalSetting__RelyingParty=${TERMINAL_RELYING_PARTY}
+      - TerminalSetting__RelyingPartyUser=${TERMINAL_RELYING_PARTY_USER}
+      - TerminalSetting__RelyingPartyPassword=${TERMINAL_RELYING_PARTY_PASSWORD}
+      - TerminalSetting__RelyingPartySignature=${TERMINAL_RELYING_PARTY_SIGNATURE}
+      - TerminalSetting__RelyingPartyKeyStore=${TERMINAL_RELYING_PARTY_KEY_STORE}
+      - TerminalSetting__RelyingPartyKeyStorePassword=${TERMINAL_RELYING_PARTY_KEY_STORE_PASSWORD}
+      - InternalSetting__BaseUrl=${INTERNAL_BASE_URL}
+      - InternalSetting__BaseHISUrl=${INTERNAL_BASE_HIS_URL}
+      - InternalSetting__GetKeyUrl=${INTERNAL_GET_KEY_URL}
+      - InternalSetting__GetSignID=${INTERNAL_GET_SIGN_ID}
+      - InternalSetting__IsDebugMode=${INTERNAL_IS_DEBUG_MODE}
+      - InternalSetting__CompanyName=${INTERNAL_COMPANY_NAME}
+      - InternalSetting__HospitalName=${INTERNAL_HOSPITAL_NAME}
+      - InternalSetting__DefaultMerchantId=${INTERNAL_DEFAULT_MERCHANT_ID}
+      - InternalSetting__SignatureMode=${INTERNAL_SIGNATURE_MODE}
+      - InternalSetting__AutoLoadImage=${INTERNAL_AUTO_LOAD_IMAGE}
+      - gPRCSetting__BaseUrl=${GPRC_BASE_URL}
+      - gPRCSetting__BaseUrlV1=${GPRC_BASE_URL_V1}
+      - gPRCSetting__Token=${GPRC_TOKEN}
+      - gPRCSetting__ClientId=${GPRC_CLIENT_ID}
+      - gPRCSetting__UserId=${GPRC_USER_ID}
+      - gPRCSetting__Password=${GPRC_PASSWORD}
+      - gPRCSetting__DbName=${GPRC_DB_NAME}
+      - MySignSetting__BaseUrl=${MYSIGN_BASE_URL}
+      - MySignSetting__ProfileId=${MYSIGN_PROFILE_ID}
+      - MySignSetting__ClientId=${MYSIGN_CLIENT_ID}
+      - MySignSetting__ClientSecret=${MYSIGN_CLIENT_SECRET}
+    restart: always
+    ports:
+      - "${DEFAULT_PORT}81:80"
+    profiles: [ "dev", "prod" ]
+    volumes:
+      # - /etc/timezone:/etc/timezone
+      - /etc/localtime:/etc/localtime
+      - ./Signature.API/wwwroot:/app/wwwroot
+      - ./Signature.API/log:/app/log
+    networks:
+      - local
+    
+  key.api:
+    image: thientam1992/key-api	:latest
+    container_name: key-api-${PROFILE_ENV}
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - TerminalSetting__BaseUrl=${TERMINAL_BASE_URL}
+      - TerminalSetting__RelyingParty=${TERMINAL_RELYING_PARTY}
+      - TerminalSetting__RelyingPartyUser=${TERMINAL_RELYING_PARTY_USER}
+      - TerminalSetting__RelyingPartyPassword=${TERMINAL_RELYING_PARTY_PASSWORD}
+      - TerminalSetting__RelyingPartySignature=${TERMINAL_RELYING_PARTY_SIGNATURE}
+      - TerminalSetting__RelyingPartyKeyStore=${TERMINAL_RELYING_PARTY_KEY_STORE}
+      - TerminalSetting__RelyingPartyKeyStorePassword=${TERMINAL_RELYING_PARTY_KEY_STORE_PASSWORD}
+    restart: always
+    ports:
+      - "${DEFAULT_PORT}82:80"
+    profiles: [ "dev", "prod" ]
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./Key.API/wwwroot:/app/wwwroot
+      - ./Key.API/log:/app/log
+    networks:
+      - local

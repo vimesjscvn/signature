@@ -1,0 +1,1 @@
+TRUNCATE TABLE PUBLIC.table_name;

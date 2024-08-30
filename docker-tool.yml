@@ -1,0 +1,25 @@
+﻿version: '3.7'
+
+volumes:
+  metabase_data:
+    driver: local
+  portainer_data:
+    driver: local
+
+networks:
+  local:
+    driver: bridge
+
+services:   
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: sign-pg-admin-${PROFILE_ENV}
+    restart: unless-stopped
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "${DEFAULT_PORT}13:80"
+    profiles: [ "dev", "prod" ]
+    networks:
+      - local
